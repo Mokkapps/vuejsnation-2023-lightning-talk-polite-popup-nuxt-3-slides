@@ -1,0 +1,6 @@
+{
+  "editor.formatOnSave": false,
+  "scss.lint.unknownAtRules": "ignore",
+  "css.lint.unknownAtRules": "ignore",
+  "markdownlint.ignore": "*.md"
+}
