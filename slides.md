@@ -357,5 +357,4 @@ layout: outro
 
 Questions?
 
-!!!FIXME!!!
-[Repository](github.com/mokkapps/slidev-theme-mokkapps) / [Slides](https://slidev-theme-mokkapps.netlify.app/)
+[Repository](https://github.com/Mokkapps/vuejsnation-2023-lightning-talk-polite-popup-nuxt-3-slides) / [Slides](https://vuejsnation-2023-talk-polite-popup.netlify.app/)
