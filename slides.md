@@ -1,7 +1,8 @@
 ---
 theme: mokkapps
 title: "Building a Polite Popup with Nuxt 3"
-lineNumbers: true
+# lineNumbers: true
+colorSchema: 'light'
 ---
 
 # Building a Polite Popup with Nuxt 3
@@ -114,7 +115,7 @@ before they get asked to sign up.
 
 <v-click>
 
-```ts {1,10|2|4|6-9}
+```ts {1,10|2|4|6-9} {maxHeight:'170px'}
 export const usePolitePopup = () => {
   const visible = useState("visible", () => false);
 
