@@ -1,17 +1,14 @@
 ---
 theme: mokkapps
 title: "Building a Polite Popup with Nuxt 3"
-# lineNumbers: true
+lineNumbers: true
 colorSchema: 'light'
+exportFilename: 'vuejs-nation-2023-lightning-talk-polite-popup'
 ---
 
 # Building a Polite Popup with Nuxt 3
 
 Vue.js Nation 2023 - Lightning Talk
-
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
 
 ---
 layout: about-me
@@ -36,12 +33,21 @@ Let's take a look at an example of an "impolite popup"
 
 <v-clicks>
 
-- <twemoji-warning /> Problem 1: Another annoying popup on the landing page
-- <twemoji-warning /> Problem 2: Visitor haven't engaged with the related content
-- <twemoji-warning /> Problem 3: Visitor is asked every time he visits the page
+- <twemoji-warning /> Problem 1: Another annoying full-page popup on the landing page
+- <twemoji-warning /> Problem 2: Visitors haven't engaged with the related content
+- <twemoji-warning /> Problem 3: Visitors are asked every time they visit the page
 
 </v-clicks>
 
+<!--
+We all know the typical website nowadays
+
+1. Ads, right corner
+2. Cookies, top center
+3. A popup that wants us to subscribe to a newsletter
+4. Navigate to Vue page
+5. Navigate back home, we are asked again
+-->
 
 ---
 layout: section
@@ -51,12 +57,12 @@ layout: section
 
 ---
 layout: image-right
-image: https://sd.keepcalms.com/i/keep-calm-and-please-be-polite-thank-you.png
+image: ./be-polite.png
 ---
 
 # Polite Popup
 
-In the following slides, we'll build a popup that
+A "polite popup"
 
 <v-clicks>
 
@@ -71,7 +77,30 @@ In the following slides, we'll build a popup that
 
 <v-click>
 
-This means they’ll be **more likely to sign up** by the time we ask them because it’ll be **after they’ve decided they liked our content**.
+Visitors will be **more likely to sign up** by the time they are asked because it’ll be **after they’ve decided they liked the content**.
+
+</v-click>
+
+---
+layout: iframe-right
+url: "https://vuejsnation-2023-polite-popup-nuxt-3.netlify.app/?demoMode=polite-popup"
+---
+
+# Build our own polite popup
+
+In our example, the goal is that the visitors have to:
+
+<v-clicks>
+
+- be **visiting a page with Vue-related content** as the newsletter targets Vue developers
+- be **actively scrolling** the current page for **6 seconds or more**
+- **scroll through at least 35%** of the current page during their visit
+
+</v-clicks>
+
+<v-click>
+
+before they get asked to sign up.
 
 </v-click>
 
@@ -95,29 +124,11 @@ h1 {
 
 # Vue Composable
 
-Let's start by writing a Vue composable for our polite popup. The goal is that the visitors have to:
+Let's start by writing a Vue composable for our polite popup:
 
-<v-clicks>
-
-- be **visiting a page with Vue-related content** as the newsletter targets Vue developers
-- be **actively scrolling** the current page for **6 seconds or more**
-- **scroll through at least 35%** of the current page during their visit
-
-</v-clicks>
-
-<v-click>
-
-before they get asked to sign up.
-
-</v-click>
-
-<br/>
-
-<v-click>
-
-```ts {1,10|2|4|6-9} {maxHeight:'170px'}
+```ts {1,10|2|4|6-9}
 export const usePolitePopup = () => {
-  const visible = useState("visible", () => false);
+  const visible = ref(false);
 
   const trigger = () => {}
 
@@ -128,18 +139,10 @@ export const usePolitePopup = () => {
 };
 ```
 
-</v-click>
-
 <!--
-We defined two state variables:
-* visible: a boolean indicating if the popup should be visible or not.
-* readTimeElapsed: a boolean indicating if the user has spent the defined time on the page.
-
-The trigger method is exposed and triggers the a timer which is used to check if the visitor has spent a predefined amount of time on the page. 
-
-A Vue watcher is used to set visible to true if the timer has expired and the scroll threshold is exceeded. 
-
-For the timer, we use VueUse's useTimeoutFn composable which runs a setTimeout function and sets the readTimeElapsed state variable to true after the timer has expired.
+* We call it usePolitePopup
+* visible: reactive variable, a boolean indicating if the popup should be visible or not.
+* The trigger method is exposed and will be filled later. 
 -->
 
 ---
@@ -148,14 +151,14 @@ For the timer, we use VueUse's useTimeoutFn composable which runs a setTimeout f
 
 The visitor must be actively scrolling the current page for 6 seconds or more.
 
-```ts {7|1,3,9-15|10-12|3,13|14|7,9,17-19} {maxHeight:'350px'}
+```ts {7|1|9,14|7,10-12|3,13|7,9,17-19} {maxHeight:'350px'}
 import { useTimeoutFn } from '@vueuse/core'
 
-const config = { timeoutInMs: 3000 }
+const config = { timeoutInMs: 3000 } as const
 
 export const usePolitePopup = () => {
-  const visible = useState("visible", () => false);
-  const readTimeElapsed = useState('read-time-elapsed', () => false)
+  const visible = ref(false);
+  const readTimeElapsed = ref(false)
 
   const { start } = useTimeoutFn(
     () => {
@@ -177,16 +180,23 @@ export const usePolitePopup = () => {
 };
 ```
 
+<!--
+* readTimeElapsed: reactive variable indicating if the user has spent the defined time on the page.
+* VueUse's useTimeoutFn composable: runs a setTimeout function and sets the readTimeElapsed state variable to true after the timer has expired.
+* not immediate, we use the returned start method to start the timeout
+* the timeout is trigger if the `trigger` method is called
+-->
+
 ---
 
 # Track scroll progress
 
 The visitor must scroll through at least 35% of the current page during their visit.
 
-```ts {1,7-16|3,18-20} {maxHeight:'350px'}
+```ts {10,11,16|12|1,7,12,13|1,8,13,14,15|3,11,16,18-20} {maxHeight:'350px'}
 import { useWindowSize, useWindowScroll } from '@vueuse/core'
 
-const config = { timeoutInMs: 3000, contentScrollThresholdInPercentage: 35, }
+const config = { timeoutInMs: 3000, contentScrollThresholdInPercentage: 35, } as const
 
 export const usePolitePopup = () => {
     //...
@@ -230,8 +240,8 @@ We have now all information available to update the `visible` reactive variable:
 
 ```ts {2,3,6,8-12} {maxHeight:'350px'}
 export const usePolitePopup = () => {
-    const visible = useState('visible', () => false)
-    const readTimeElapsed = useState('read-time-elapsed', () => false)
+    const visible = ref(false)
+    const readTimeElapsed = ref(false)
     //...
 
     const scrolledContent = computed(() => amountScrolledInPercentage.value >= config.contentScrollThresholdInPercentage)
@@ -248,6 +258,10 @@ export const usePolitePopup = () => {
     }
 }
 ```
+
+<!--
+Vue Watcher!
+-->
 
 ---
 
@@ -298,7 +312,7 @@ export const usePolitePopup = () => {
 
 ## Trigger timer
 
-In `[..slug].vue` we trigger the timer if the route path equal `/vue`:
+In `[..slug].vue` we trigger the timer if the route path is equal to `/vue`:
 
 ```vue {7-15}
 <template>
@@ -319,13 +333,30 @@ if (route.path === "/vue") {
 ```
 
 ---
-layout: iframe-demo
-url: "https://vuejsnation-2023-polite-popup-nuxt-3.netlify.app/?demoMode=inpolite-popup"
+layout: image-right
+image: https://media.giphy.com/media/dkGhBWE3SyzXW/giphy.gif
 ---
 
-# Demo Time
+# We're done!
 
-[Source Code](https://stackblitz.com/edit/vuejsnation-2023-lightning-talk-polite-popup-nuxt-3)
+<v-click>
+
+We programmed a simple polite popup in Nuxt 3 💪🏻
+
+</v-click>
+
+<v-clicks>
+
+Thanks to the amazing people behind
+
+- [Vue](https://vuejs.org/)
+- [VueUse](https://vueuse.org/)
+- [Nuxt 3](https://nuxt.com/)
+- [Slidev](https://sli.dev/)
+
+**Virtual applause to all of you!**
+
+</v-clicks>
 
 ---
 layout: article
@@ -336,19 +367,6 @@ layout: article
 For more details read [the corresponding blog post](https://mokkapps.de/blog/building-a-polite-newsletter-popup-with-nuxt-3/)
 
 ![Blog Post Image](https://res.cloudinary.com/mokkapps/image/upload/v1673367765/Xnapper-2023-01-10-17.22.06_lkwtbb.png)
-
----
-layout: image-right
-image: https://media.giphy.com/media/l3vR4yk0X20KimqJ2/giphy.gif
----
-
-# Thanks to the amazing people behind
-
-- [Vue](https://vuejs.org/)
-- [VueUse](https://vueuse.org/)
-- [Nuxt 3](https://nuxt.com/)
-- [Slidev](https://sli.dev/)
-
 
 ---
 layout: outro
