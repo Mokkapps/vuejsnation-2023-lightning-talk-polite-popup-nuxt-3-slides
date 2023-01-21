@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@iconify-json/logos": "^1.1.22",
-    "@iconify-json/twemoji": "^1.1.10"
+    "@iconify-json/twemoji": "^1.1.10",
+    "playwright-chromium": "^1.29.2"
   }
 }
