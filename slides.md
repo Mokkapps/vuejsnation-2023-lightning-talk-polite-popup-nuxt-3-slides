@@ -1,9 +1,12 @@
 ---
 theme: mokkapps
 title: "Building a Polite Popup with Nuxt 3"
-lineNumbers: true
+# lineNumbers: true
 colorSchema: 'light'
 exportFilename: 'vuejs-nation-2023-lightning-talk-polite-popup'
+# provide a downloadable PDF:
+download: true
+globalBottomPosition: 'left'
 ---
 
 # Building a Polite Popup with Nuxt 3
@@ -56,39 +59,14 @@ layout: section
 ## What is a "Polite Popup"?
 
 ---
-layout: image-right
-image: ./be-polite.png
----
-
-# Polite Popup
-
-A "polite popup"
-
-<v-clicks>
-
-- waits for a visitor to browse the website
-- makes sure visitors are interested in the website
-- appears off to the side in a non-intrusive way
-- is easy to dismiss or ignore
-- asks for permission first
-- waits a bit before it appears again
-
-</v-clicks>
-
-<v-click>
-
-Visitors will be **more likely to sign up** by the time they are asked because it’ll be **after they’ve decided they liked the content**.
-
-</v-click>
-
----
 layout: iframe-right
-url: "https://vuejsnation-2023-polite-popup-nuxt-3.netlify.app/?demoMode=polite-popup"
+url: >-
+  https://vuejsnation-2023-polite-popup-nuxt-3.netlify.app/?demoMode=polite-popup
 ---
 
-# Build our own polite popup
+# Let's build a polite popup
 
-In our example, the goal is that the visitors have to:
+The goal is that the visitors have to
 
 <v-clicks>
 
@@ -103,6 +81,14 @@ In our example, the goal is that the visitors have to:
 before they get asked to sign up.
 
 </v-click>
+
+<!--
+- React page -> no popup
+- actively scrolling for 6 sec
+- scroll through 35% of the page
+
+- Visitors will be more likely to sign up because they are asked after they’ve decided they liked the content.
+-->
 
 ---
 layout: image
@@ -154,7 +140,7 @@ The visitor must be actively scrolling the current page for 6 seconds or more.
 ```ts {7|1|9,14|7,10-12|3,13|7,9,17-19} {maxHeight:'350px'}
 import { useTimeoutFn } from '@vueuse/core'
 
-const config = { timeoutInMs: 3000 } as const
+const config = { timeoutInMs: 6000 } as const
 
 export const usePolitePopup = () => {
   const visible = ref(false);
@@ -187,28 +173,30 @@ export const usePolitePopup = () => {
 * the timeout is trigger if the `trigger` method is called
 -->
 
+
 ---
 
 # Track scroll progress
 
 The visitor must scroll through at least 35% of the current page during their visit.
 
-```ts {10,11,16|12|1,7,12,13|1,8,13,14,15|3,11,16,18-20} {maxHeight:'350px'}
+```ts {10,11,16|12|1,7,12,13|1,8,14,15|12-15|3,11,16,18-20} {maxHeight:'350px'}
 import { useWindowSize, useWindowScroll } from '@vueuse/core'
 
-const config = { timeoutInMs: 3000, contentScrollThresholdInPercentage: 35, } as const
+const config = { timeoutInMs: 6000, contentScrollThresholdInPercentage: 35, } as const
 
 export const usePolitePopup = () => {
     //...
     const { height: windowHeight } = useWindowSize()
-    const { y: scrollYInPx } = useWindowScroll()
+    const { y: scrollTop } = useWindowScroll()
 
     // Returns percentage scrolled (ie: 80 or NaN if trackLength == 0)
     const amountScrolledInPercentage = computed(() => {
       const documentScrollHeight = document.documentElement.scrollHeight
       const trackLength = documentScrollHeight - windowHeight.value
-      const percentageScrolled = Math.floor((scrollYInPx.value / trackLength) * 100)
-      return percentageScrolled
+      const scrollPercent = scrollTop.value / trackLength;
+      const scrollPercentRounded = Math.floor(scrollPercent * 100);
+      return scrollPercentRounded;
     })
 
     const scrolledContent = computed(() => {
@@ -221,6 +209,12 @@ export const usePolitePopup = () => {
     }
 }
 ```
+
+<v-click at="1">
+
+<img v-if="$slidev.nav.clicks <= 4" src="/scroll-progress.png" class="absolute left-150 top-50 h-50 border rounded shadow" />
+
+</v-click>
 
 <!--
 To get the total scrollable area of a document, we need to retrieve the following two measurements of the page:
@@ -345,18 +339,26 @@ We programmed a simple polite popup in Nuxt 3 💪🏻
 
 </v-click>
 
-<v-clicks>
+<v-click>
 
 Thanks to the amazing people behind
+
+</v-click>
+
+<v-clicks>
 
 - [Vue](https://vuejs.org/)
 - [VueUse](https://vueuse.org/)
 - [Nuxt 3](https://nuxt.com/)
 - [Slidev](https://sli.dev/)
 
+</v-clicks>
+
+<v-click>
+
 **Virtual applause to all of you!**
 
-</v-clicks>
+</v-click>
 
 ---
 layout: article
