@@ -1,7 +1,7 @@
 ---
 theme: mokkapps
 title: "Building a Polite Popup with Nuxt 3"
-# lineNumbers: true
+lineNumbers: true
 colorSchema: 'light'
 exportFilename: 'vuejs-nation-2023-lightning-talk-polite-popup'
 # provide a downloadable PDF:
@@ -16,6 +16,14 @@ Vue.js Nation 2023 - Lightning Talk
 ---
 layout: about-me
 ---
+
+
+
+<!--
+- run a weekly vue newsletter
+- very active on Twitter
+- follow if you are interested in Vue & Nuxt
+-->
 
 ---
 layout: section
@@ -66,7 +74,7 @@ url: >-
 
 # Let's build a polite popup
 
-The goal is that the visitors have to
+Before visitors are asked to sign up, they have to
 
 <v-clicks>
 
@@ -78,16 +86,12 @@ The goal is that the visitors have to
 
 <v-click>
 
-before they get asked to sign up.
-
 </v-click>
 
 <!--
+- Nuxt Content App
 - React page -> no popup
-- actively scrolling for 6 sec
-- scroll through 35% of the page
-
-- Visitors will be more likely to sign up because they are asked after they’ve decided they liked the content.
+- Visitors will be more likely to sign up because they are asked after they’ve decided they liked the content
 -->
 
 ---
@@ -308,7 +312,7 @@ export const usePolitePopup = () => {
 
 In `[..slug].vue` we trigger the timer if the route path is equal to `/vue`:
 
-```vue {7-15}
+```vue {7,8,12,14,15|7,10,12-15}
 <template>
   <main>
     <ContentDoc />
@@ -326,6 +330,12 @@ if (route.path === "/vue") {
 </script>
 ```
 
+<!--
+- Catch-all route
+- check path
+- trigger from our composable
+-->
+
 ---
 layout: image-right
 image: https://media.giphy.com/media/dkGhBWE3SyzXW/giphy.gif
@@ -335,7 +345,7 @@ image: https://media.giphy.com/media/dkGhBWE3SyzXW/giphy.gif
 
 <v-click>
 
-We programmed a simple polite popup in Nuxt 3 💪🏻
+We implemented the main logic for a polite popup in Nuxt 3 💪🏻
 
 </v-click>
 
@@ -356,19 +366,24 @@ Thanks to the amazing people behind
 
 <v-click>
 
-**Virtual applause to all of you!**
-
 </v-click>
 
 ---
 layout: article
 ---
 
-# Blog Post
+# You want more?
 
 For more details read [the corresponding blog post](https://mokkapps.de/blog/building-a-polite-newsletter-popup-with-nuxt-3/)
 
 ![Blog Post Image](https://res.cloudinary.com/mokkapps/image/upload/v1673367765/Xnapper-2023-01-10-17.22.06_lkwtbb.png)
+
+<!--
+- Missing some functionality
+- the popup Vue component
+- extended visibility logic
+- all details in the blog post
+-->
 
 ---
 layout: outro
