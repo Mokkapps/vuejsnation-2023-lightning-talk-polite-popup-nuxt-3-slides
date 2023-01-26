@@ -1,7 +1,7 @@
 ---
 theme: mokkapps
 title: "Building a Polite Popup with Nuxt 3"
-lineNumbers: true
+# lineNumbers: true
 colorSchema: 'light'
 exportFilename: 'vuejs-nation-2023-lightning-talk-polite-popup'
 # provide a downloadable PDF:
@@ -74,12 +74,12 @@ url: >-
 
 # Let's build a polite popup
 
-Before visitors are asked to sign up, they have to
+A polite popup appears to visitors if they
 
 <v-clicks>
 
-- be **visiting a page with Vue-related content** as the newsletter targets Vue developers
-- be **actively scrolling** the current page for **6 seconds or more**
+- are **visiting a page with Vue-related content** as the newsletter targets Vue developers
+- are **actively scrolling** the current page for **6 seconds or more**
 - **scroll through at least 35%** of the current page during their visit
 
 </v-clicks>
